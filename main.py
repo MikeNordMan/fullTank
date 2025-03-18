@@ -12,20 +12,34 @@ def printVal():
 
 def clear():
     entry_1.delete(0, END)  # удаление введенного текста
+    entry_2.delete(0, END)
+    entry_3.delete(0, END)
 
 
 def getData():
+    n = []
     a = entry_1.get()  # получение введенного текста
-    print(a)
-    return a
+    n.append(a)
+    b = entry_2.get()
+    n.append(b)
+    c = entry_3.get()
+    n.append(c) 
+    #print(n[0] + n[1] + n[2])
+    #a = n[0] + n[1] + n[2]
+    #print(a)
+    return n
 
 
-def setData():
-    label['text'] = getData()
+def setData(mylist):
+    a = mylist[0]
+    b = mylist[1]
+    c = mylist[2]
+    #print(a)
+    label['text'] = a +'\n'+ b + '\n'+ c
 
 
 def btnClik():
-   setData()
+   setData(getData())
    clear()
 
 
@@ -51,4 +65,3 @@ label.pack(anchor=N)
 
 if __name__ == '__main__':
     root.mainloop()
-
