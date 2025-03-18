@@ -1,10 +1,11 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
+from with_Sript import MyScript
 
 root = Tk()
 root.geometry("200x300")
-
+tl = []
 
 def printVal():
     print()
@@ -30,18 +31,20 @@ def getData():
     return n
 
 
-def setData(mylist):
+def setData(mylist, tl):
     a = mylist[0]
     b = mylist[1]
     c = mylist[2]
     #print(a)
     label['text'] = a +'\n'+ b + '\n'+ c
+    a = MyScript(a,b,c)
+    tl.append(a)
 
 
 def btnClik():
-   setData(getData())
+   setData(getData(),tl)
    clear()
-
+   print(tl) 
 
 
 
