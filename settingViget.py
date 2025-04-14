@@ -138,7 +138,7 @@ class SettingsPump(tkinter.Frame):
         self.powerPump = powerPump
 
     def setRainSensor(self, rainSensor):
-        self.rainSensor = rainSensor
+        self.rainSensor.set(rainSensor)
 
     def getTimeMax(self):
         timeMax = self.tm_entry.get()
