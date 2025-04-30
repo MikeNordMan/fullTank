@@ -1,7 +1,9 @@
 '''Создание клиетнтского MQTT'''
 '''в функцию on_connect добавил properties и... заработало
    так же прищлось пришлось добавить mqtt_client.CallbackAPIVersion.VERSION2 
-   в client = mqtt_client.Client изнасально было client = mqtt_client.Client(client_id)'''
+   в client = mqtt_client.Client изнасально было client = mqtt_client.Client(client_id)
+   на малинке пришлось все это убрать!!!
+   дальше продолжаем сдесь и корректируем на малинке'''
 
 '''Переносим на малинку'''
 

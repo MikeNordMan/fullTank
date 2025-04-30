@@ -1,5 +1,6 @@
 import tkinter
 from tkinter import *
+from progress_tank import *
 
 class infoPart(tkinter.Frame):
     def __init__(self, master):
@@ -7,14 +8,14 @@ class infoPart(tkinter.Frame):
         self.frame_collor = None
         self.msg = '   Тут сообщение   '
         self.frame = Frame(width=350, height=50, borderwidth=1, relief=SOLID, pady=5, padx=10)
-        #self.label_1 = Label(self.frame, text="Первый блок", padx=(325-78)/2, pady=20)
+        self.label_1 = Label(self.frame, text="Первый блок", padx=(325-78)/2, pady=20)
         self.infoLabel = Label(self.frame, text=self.msg, padx=1, pady=1)
         #self.infoLabel = Label(self.frame, padx=2, pady=2)
 
 
         self.frame.pack(fill=X, padx=2, pady= 1)
         #self.frame.config(width=300, height=50)
-        #self.label_1.pack()
+        self.label_1.pack(side=LEFT)
         self.infoLabel.pack(padx=2)
         self.getCollor()
 
@@ -48,17 +49,19 @@ class Frame_2(tkinter.Frame):
         msg = 'Новое сообщение Новое сообщение Новое сообщение Новое сообщение Новое сообщение '
         self.infoMsg.setMsg(msg)
 
-
+'''___________________________________________________________________________'''
 class AnalogRun(tkinter.Frame):
-    def __init__(self, master, infoMsg):
+    def __init__(self, master, infoMsg, bar):
         super().__init__(master)
         self.infoMsg = infoMsg
+        self.bar = bar
+
 
         self.flag_btn = True
         self.flag_timer = True
         self.flag_msg_1 = True
         self.flag_msg_2 = True
-        self.timer_id = None
+        self.timer_test = None
 
         self.org_color = None
 
@@ -80,51 +83,79 @@ class AnalogRun(tkinter.Frame):
         self.btn_frame.pack(side=LEFT)
         self.timer_frame.pack()
         self.btn.pack()
-        self.fill_Create()
+        self.wigetLabelCreate()
 
 
     def on_off(self):
-        if self.flag_btn == True:
-           self.pumpON()
-           self.timeRun(self.count, self.min)
+        #print(self.bar.getFullTank())
 
-        else :
-           self.pumpOff()
+        if self.bar.getFullTank()== False:
+            if self.bar.getFlagOnOff() == False:
+                self.btn_Start()
+                self.bar.setFlagOnOff(True)
+                self.bar.set_remais_tank()
+                self.bar.up_prog_bar()  # Запуск метода работы progress bar
+                self.infoMsg.setMsg('Насос Включен!')
+                #self.bar.test_prog()
+                self.fullTank_check() #Запуск отслеживания полного Танка
+            else:
+                self.bar.setFlagOnOff(False)
+                self.infoMsg.setMsg('Насос Выключен!')
+                self.flag_btn = True
+                self.btn_Stop()
+                self.bar.stop_progerss_bar()  # Остановка метода работы progress bar
+                self.bar.remains_update()
+                self.bar.recover_BoreHole()
+                self.fullTank_check_stop()  # Остановка отслеживания полного Танка
+        else:
+            #self.infoMsg.setMsg('from wig Насос Выключен! Полный Танк!')
+            self.btn_Stop()
+            self.fullTank()
 
-    def pumpON(self):
-        self.infoMsg.setMsg('Насос Включен!')
-        self.fill_Destroy()
-        self.flag_timer =True
-        self.wigetTimerCreate()
+    def btn_Start(self):
+        #self.infoMsg.setMsg('Насос Включен!')
         self.org_color = self.btn.cget('bg')
         self.btn.config(text="Stop", bg='red')
+        self.label_timer.config(text='Ручной Режим Активирован!')
         self.flag_btn = False
 
-    def wigetTimerCreate(self):
-        self.label_timer = Label(self.timer_frame, text='00:00')
+    def wigetLabelCreate(self):
+        self.label_timer = Label(self.timer_frame, text='Активация ручного режима')
         self.label_timer.pack()
-
-    def fill_Create(self):
-        self.label_fill = Label(self.timer_frame, text='Время работы 5 мин')
-        self.label_fill.pack()
 
     def fill_Destroy(self):
         self.label_fill.destroy()
 
-    def pumpOff(self):
-        self.infoMsg.setMsg('Тут сообщение')
-        print('Stop')
+    def btn_Stop(self):
+        #self.infoMsg.setMsg('')
+        #print('Stop  from App')
         self.btn.config(text="Start", bg=self.org_color)
+        self.label_timer.config(text='Ручной Режим Деактивирован!')
         self.flag_btn = True
-        self.flag_timer = False
-        self.count = 0
-        self.min = 0
-        self.timer_frame.after_cancel(self.timer_id)
-        self.label_timer.destroy()
-        self.fill_Create()
+
+    def fullTank(self):
+        self.infoMsg.setMsg('Внимание! Полный Танк!')
+
+    def fullTank_check(self):
+        fullTank = self.bar.getFullTank()
+        if fullTank == False:
+            self.timer_test = self.btn_frame.after(100, self.fullTank_check)
+        else:
+            #print('else rul')
+            self.fullTank_check_stop()
+            self.infoMsg.setMsg('Насос Выключен! Полный Танк!')
+            self.btn_Stop()
+
+    def fullTank_check_stop(self):
+         self.btn_frame.after_cancel(self.timer_test)
+         print("stop timer")
 
 
-    def msg_controll(self, min):
+
+
+
+
+    def msg_controll(self, min): # Удалить
         if min >= self.minMidl and self.flag_msg_1:
             self.infoMsg.setMsg('Внимание! Время работы насоса 3 минуты')
             self.infoMsg.setCollorBg('yellow')
@@ -154,7 +185,7 @@ class AnalogRun(tkinter.Frame):
 
         self.timer_id = self.timer_frame.after(self.ms, self.timeRun, count + 1, minute)
 
-
+'''____________________________________________________________________________________________________'''
 
 
 class A():
