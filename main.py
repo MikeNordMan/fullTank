@@ -1,25 +1,46 @@
-import tkinter
-from tkinter import *
-from wigets import *
-class App(tkinter.Tk):
-    def __init__(self):
-        super().__init__()
-        self.title("Test my App")
-        #self.geometry('350x300')
+# Пытаемся создать скрипт для публикации сообщений на малинке
+import time
+from paho.mqtt import client as mqtt_client
 
-        self.frame_a = infoPart(self)
-        #self.frame_a.setMsg('test')
-        self.frame_b = Frame_2(self, self.frame_a)
-        self.aRun = AnalogRun(self, self.frame_a)
+broker = '"192.168.68.116"'
+port = 1883
+topic = "hello/world"
+client_id ='myname'
 
+def connect_mqtt() -> mqtt_client:
+    def on_connect(client, userdata, flags, rc):
+        if rc == 0:
+            print("Подключено к брокеру MQTT!")
+        else:
+            print("Не удалось подключиться, код возврата %d\n", rc)
 
+    client = mqtt_client.Client(client_id) # client.username_pw_set(имя пользователя, пароль)
+    client.on_connect = on_connect
+    client.connect(broker, port)
+    return client
 
+def publish ( client ):
+    msg_count = 1
+    while True :
+        time.sleep( 1 )
+        msg = f"messages: {msg_count}"
+        result = client.publish(topic, msg) # result: [0, 1]
+        status = result[ 0 ]
+        if status == 0 :
+             print ( f"Отправить ` {msg} ` в тему ` {topic} `" )
+        else :
+             print ( f"Не удалось отправить сообщение в тему {topic} " )
+        msg_count += 1
+        if msg_count > 5:
+            break
 
-def main():
-    app = App()
-    app.mainloop()
+def run():
+    client = connect_mqtt()
+    client.loop_start()
+    publish(client)
+    client.loop_stop()
+
 
 if __name__ == '__main__':
-    main()
-
+     run()
 
